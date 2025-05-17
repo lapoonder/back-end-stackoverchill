@@ -7,13 +7,15 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: http://localhost:3000
   - url: https://back-end-stackoverchill-793z.onrender.com
+  - url: http://localhost:3000
 tags:
   - name: Auth
     description: Authentication endpoints
   - name: User
     description: Get information about user
+  - name: Categories
+    description: Categories and types of financial transactions
   - name: Transactions
     description: Finance operations
 paths:
@@ -32,6 +34,9 @@ paths:
   /user:
     get:
       $ref: ../swagger/paths/user/get.yaml
+  /categories/{type}:
+    get:
+      $ref: ../swagger/paths/categories/{type}/get.yaml
 components:
   schemas:
     UserRegister:

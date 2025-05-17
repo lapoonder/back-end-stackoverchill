@@ -3,7 +3,7 @@ import { model, Schema } from 'mongoose';
 const categoriesSchema = new Schema(
   {
     name: { type: String, required: true },
-    categoryType: {
+    type: {
       type: String,
       required: true,
       enum: ['income', 'expense'],
