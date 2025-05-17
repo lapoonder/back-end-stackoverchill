@@ -1,0 +1,709 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Money Guard API",
+    "description": "This is a documentation of finance app",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    },
+    {
+      "url": "https://nodejs-hw-mongodb-eupy.onrender.com"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authentication endpoints"
+    },
+    {
+      "name": "User",
+      "description": "Get information about user"
+    },
+    {
+      "name": "Transactions",
+      "description": "Finance operations"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "createUser",
+        "description": "Create a new user.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userRegister"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "logintUser",
+        "description": "Login user.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "summary": "Refresh access token",
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "refreshUser",
+        "description": "Refresh access token for user.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Token"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout user",
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "logoutUser",
+        "description": "Logout user.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/noContent"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Token"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "summary": "Get information about user",
+        "tags": [
+          "User"
+        ],
+        "operationId": "getUser",
+        "description": "Get information about user.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200user"
+          },
+          "401": {
+            "$ref": "#/components/responses/401user"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserRegister": {
+        "$ref": "#/components/schemas/userRegister"
+      },
+      "UserLogin": {
+        "$ref": "#/components/schemas/userLogin"
+      },
+      "Tokens": {
+        "$ref": "#/components/schemas/tokens"
+      },
+      "UserInformation": {
+        "$ref": "#/components/schemas/userInformation"
+      },
+      "userRegister": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "name": {
+            "description": "User's name",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 32,
+            "example": "John Doe"
+          },
+          "email": {
+            "description": "User's email",
+            "type": "string",
+            "format": "email",
+            "maxLength": 64,
+            "example": "johnDoe@gmail.com"
+          },
+          "password": {
+            "description": "User's password",
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 64,
+            "example": "qweRTyui"
+          }
+        }
+      },
+      "userRegisterRespons": {
+        "type": "object",
+        "required": [
+          "_id",
+          "name",
+          "email",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "_id": {
+            "description": "User id",
+            "type": "string",
+            "example": "65e4decdd286b30065d54af9"
+          },
+          "name": {
+            "description": "User's name",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 32,
+            "example": "John Doe"
+          },
+          "email": {
+            "description": "User's email",
+            "type": "string",
+            "format": "email",
+            "maxLength": 64,
+            "example": "johnDoe@gmail.com"
+          },
+          "createdAt": {
+            "description": "Data create",
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-04-08T22:44:33.327Z"
+          },
+          "updatedAt": {
+            "description": "Data update",
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-04-16T19:32:54.566Z"
+          }
+        }
+      },
+      "userLogin": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "description": "User's email",
+            "type": "string",
+            "format": "email",
+            "maxLength": 64,
+            "example": "johnDoe@gmail.com"
+          },
+          "password": {
+            "description": "User's password",
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 64,
+            "example": "qweRTyui"
+          }
+        }
+      },
+      "tokens": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          }
+        }
+      },
+      "userInformation": {
+        "type": "object",
+        "required": [
+          "_id",
+          "name",
+          "email",
+          "balance",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "_id": {
+            "description": "User id",
+            "type": "string",
+            "example": "65e4decdd286b30065d54af9"
+          },
+          "name": {
+            "description": "User's name",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 32,
+            "example": "John Doe"
+          },
+          "balance": {
+            "description": "Information about balance",
+            "type": "number",
+            "example": "0.00"
+          },
+          "email": {
+            "description": "User's email",
+            "type": "string",
+            "format": "email",
+            "maxLength": 64,
+            "example": "johnDoe@gmail.com"
+          },
+          "createdAt": {
+            "description": "Data create",
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-04-08T22:44:33.327Z"
+          },
+          "updatedAt": {
+            "description": "Data update",
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-04-16T19:32:54.566Z"
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Successful authentication",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Successfully refreshed a session!"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/tokens"
+                }
+              }
+            }
+          }
+        }
+      },
+      "201": {
+        "description": "User created",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 201
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Successfully registered a user!"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/userRegisterRespons"
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Invalid request body (schema validation error)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "BadRequestError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message",
+                    "errors"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Bad Request"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "message",
+                          "path",
+                          "type",
+                          "context"
+                        ],
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                            "example": "\"password\" length must be at least 8 characters long"
+                          },
+                          "path": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "example": [
+                                "paasword"
+                              ]
+                            }
+                          },
+                          "type": {
+                            "type": "string",
+                            "example": "string.empty"
+                          },
+                          "context": {
+                            "type": "object",
+                            "properties": {
+                              "limit": {
+                                "type": "integer",
+                                "example": 8
+                              },
+                              "label": {
+                                "type": "string",
+                                "example": "password"
+                              },
+                              "value": {
+                                "type": "string",
+                                "example": ""
+                              },
+                              "key": {
+                                "type": "string",
+                                "example": "password"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Error in Email or Password",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "UnauthorizedError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "NotFoundError",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "NotFoundError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "409": {
+        "description": "EmailAlreadyUse",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 409
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Email already in use"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email already in use"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CreatedUser": {
+        "$ref": "#/components/responses/201"
+      },
+      "AuthSuccess": {
+        "$ref": "#/components/responses/200"
+      },
+      "NoContent": {
+        "$ref": "#/components/responses/noContent"
+      },
+      "InformationAboutUser": {
+        "$ref": "#/components/responses/200user"
+      },
+      "401Token": {
+        "description": "Invalid or expired token",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid or expired token"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "noContent": {
+        "description": "No content"
+      },
+      "200user": {
+        "description": "Information about user",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Information about user"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/userInformation"
+                }
+              }
+            }
+          }
+        }
+      },
+      "401user": {
+        "description": "Authorization failed. Possible reasons:\n  - Missing Authorization header\n  - Invalid format (expected Bearer token)\n  - Session not found\n  - Access token expired\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "UnauthorizedError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Access token expired"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+summary: Refresh access token
+tags:
+  - Auth
+operationId: refreshUser
+description: Refresh access token for user.
+security:
+  - bearerAuth: []
+responses:
+  '200':
+    $ref: ../../components/responses/auth/200.yaml
+  '401':
+    $ref: '../../components/responses/auth/401Token.yaml'
