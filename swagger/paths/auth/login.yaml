@@ -1,0 +1,19 @@
+summary: Login user
+tags:
+  - Auth
+operationId: logintUser
+description: Login user.
+security: []
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: ../../components/schemas/userLogin.yaml
+responses:
+  '200':
+    $ref: ../../components/responses/auth/200.yaml
+  '400':
+    $ref: '../../components/responses/auth/400.yaml'
+  '401':
+    $ref: '../../components/responses/auth/401.yaml'

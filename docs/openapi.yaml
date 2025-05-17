@@ -1,0 +1,57 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Money Guard API
+  description: This is a documentation of finance app
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:3000
+  - url: https://nodejs-hw-mongodb-eupy.onrender.com
+tags:
+  - name: Auth
+    description: Authentication endpoints
+  - name: User
+    description: Get information about user
+  - name: Transactions
+    description: Finance operations
+paths:
+  /auth/register:
+    post:
+      $ref: ../swagger/paths/auth/register.yaml
+  /auth/login:
+    post:
+      $ref: ../swagger/paths/auth/login.yaml
+  /auth/refresh:
+    post:
+      $ref: ../swagger/paths/auth/refresh.yaml
+  /auth/logout:
+    post:
+      $ref: ../swagger/paths/auth/logout.yaml
+  /user:
+    get:
+      $ref: ../swagger/paths/user/get.yaml
+components:
+  schemas:
+    UserRegister:
+      $ref: ../swagger/components/schemas/userRegister.yaml
+    UserLogin:
+      $ref: ../swagger/components/schemas/userLogin.yaml
+    Tokens:
+      $ref: ../swagger/components/schemas/tokens.yaml
+    UserInformation:
+      $ref: ../swagger/components/schemas/userInformation.yaml
+  responses:
+    CreatedUser:
+      $ref: ../swagger/components/responses/auth/201.yaml
+    AuthSuccess:
+      $ref: ../swagger/components/responses/auth/200.yaml
+    NoContent:
+      $ref: ../swagger/components/responses/noContent.yaml
+    InformationAboutUser:
+      $ref: ../swagger/components/responses/user/200user.yaml
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

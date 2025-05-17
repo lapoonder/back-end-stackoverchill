@@ -1,0 +1,14 @@
+description: Information about user
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Information about user
+        data:
+          $ref: ../../schemas/userInformation.yaml

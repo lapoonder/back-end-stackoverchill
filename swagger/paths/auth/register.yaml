@@ -1,0 +1,19 @@
+summary: Register a new user
+tags:
+  - Auth
+operationId: createUser
+description: Create a new user.
+security: []
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: ../../components/schemas/userRegister.yaml
+responses:
+  '201':
+    $ref: ../../components/responses/auth/201.yaml
+  '400':
+    $ref: '../../components/responses/auth/400.yaml'
+  '409':
+    $ref: '../../components/responses/auth/409.yaml'

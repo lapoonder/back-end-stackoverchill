@@ -1,0 +1,29 @@
+description: >
+  Authorization failed. Possible reasons:
+    - Missing Authorization header
+    - Invalid format (expected Bearer token)
+    - Session not found
+    - Access token expired
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - status
+        - message
+        - data
+      properties:
+        status:
+          type: integer
+          example: 401
+        message:
+          type: string
+          example: UnauthorizedError
+        data:
+          type: object
+          required:
+            - message
+          properties:
+            message:
+              type: string
+              example: 'Access token expired'

@@ -1,0 +1,61 @@
+description: Invalid request body (schema validation error)
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - status
+        - message
+        - data
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: BadRequestError
+        data:
+          type: object
+          required:
+            - message
+            - errors
+          properties:
+            message:
+              type: string
+              example: 'Bad Request'
+            errors:
+              type: array
+              items:
+                type: object
+                required:
+                  - message
+                  - path
+                  - type
+                  - context
+                properties:
+                  message:
+                    type: string
+                    example: '"password" length must be at least 8 characters long'
+                  path:
+                    type: array
+                    items:
+                      type: string
+                      example: ['paasword']
+                  type:
+                    type: string
+                    example: string.empty
+                  context:
+                    type: object
+                    properties:
+                      limit:
+                        type: integer
+                        example: 8
+                      label:
+                        type: string
+                        example: password
+                      value:
+                        type: string
+                        example: ''
+                      key:
+                        type: string
+                        example: password
