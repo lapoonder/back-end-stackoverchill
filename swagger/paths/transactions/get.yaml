@@ -1,0 +1,36 @@
+tags:
+  - Transactions
+summary: Get list of transactions
+operationId: getTransactions
+description: 'Get list of transactions with this endpoint'
+security:
+  - bearerAuth: []
+responses:
+  '200':
+    description: Successfully found transactions!
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully found transactions!
+            data:
+              type: object
+              required:
+                - data
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '../../components/schemas/transactions.yaml'
+  '401':
+    $ref: '../../components/responses/auth/401.yaml'

@@ -16,6 +16,7 @@ import {
   createTransactionSchema,
   updateTransactionSchema,
 } from '../validation/transactions.js';
+import { recalculateUserBalance } from '../services/user.js';
 
 const router = Router();
 
@@ -35,6 +36,7 @@ router.post(
   checkUser(),
   validateBody(createTransactionSchema),
   ctrlWrapper(createTransactionController),
+  ctrlWrapper(recalculateUserBalance),
 );
 
 router.delete(
@@ -42,6 +44,7 @@ router.delete(
   checkUser(),
   isValidId,
   ctrlWrapper(deleteTransactionController),
+  ctrlWrapper(recalculateUserBalance),
 );
 
 router.put(
@@ -50,6 +53,7 @@ router.put(
   isValidId,
   validateBody(createTransactionSchema),
   ctrlWrapper(upsertTransactionController),
+  ctrlWrapper(recalculateUserBalance),
 );
 
 router.patch(
@@ -58,6 +62,7 @@ router.patch(
   isValidId,
   validateBody(updateTransactionSchema),
   ctrlWrapper(patchTransactionController),
+  ctrlWrapper(recalculateUserBalance),
 );
 
 export default router;
