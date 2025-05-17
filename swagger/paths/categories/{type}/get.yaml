@@ -1,0 +1,23 @@
+summary: Get information about categories and types of financial transactions
+tags:
+  - Categories
+operationId: getCategories
+description: Get information about categories and types of financial transactions.
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: type
+    required: true
+    schema:
+      type: string
+      example: 'income'
+responses:
+  '200':
+    $ref: ../../../components/responses/categories/200C.yaml
+  '400':
+    $ref: '../../../components/responses/categories/400C.yaml'
+  '401':
+    $ref: '../../../components/responses/categories/401C.yaml'
+  '404':
+    $ref: '../../../components/responses/categories/404C.yaml'

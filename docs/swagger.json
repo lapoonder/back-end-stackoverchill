@@ -11,10 +11,10 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "https://back-end-stackoverchill-793z.onrender.com"
     },
     {
-      "url": "https://back-end-stackoverchill-793z.onrender.com"
+      "url": "http://localhost:3000"
     }
   ],
   "tags": [
@@ -25,6 +25,10 @@
     {
       "name": "User",
       "description": "Get information about user"
+    },
+    {
+      "name": "Categories",
+      "description": "Categories and types of financial transactions"
     },
     {
       "name": "Transactions",
@@ -164,6 +168,46 @@
           },
           "404": {
             "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/categories/{type}": {
+      "get": {
+        "summary": "Get information about categories and types of financial transactions",
+        "tags": [
+          "Categories"
+        ],
+        "operationId": "getCategories",
+        "description": "Get information about categories and types of financial transactions.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "income"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200C"
+          },
+          "400": {
+            "$ref": "#/components/responses/400C"
+          },
+          "401": {
+            "$ref": "#/components/responses/401C"
+          },
+          "404": {
+            "$ref": "#/components/responses/404C"
           }
         }
       }
@@ -334,6 +378,31 @@
             "type": "string",
             "format": "date-time",
             "example": "2025-04-16T19:32:54.566Z"
+          }
+        }
+      },
+      "categoriesInformation": {
+        "type": "object",
+        "required": [
+          "_id",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "_id": {
+            "description": "Category id",
+            "type": "string",
+            "example": "65e4decdd286b30065d54af9"
+          },
+          "name": {
+            "description": "Category",
+            "type": "string",
+            "example": "Incomes"
+          },
+          "type": {
+            "description": "Type category",
+            "type": "string",
+            "example": "income"
           }
         }
       }
@@ -690,6 +759,185 @@
                     "message": {
                       "type": "string",
                       "example": "Access token expired"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "200C": {
+        "description": "List of categories",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "List of categories for income"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/categoriesInformation"
+                }
+              }
+            }
+          }
+        }
+      },
+      "400C": {
+        "description": "BadRequestError",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "BadRequestError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message",
+                    "errors"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Bad Request"
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "message",
+                          "path",
+                          "type",
+                          "context"
+                        ],
+                        "properties": {
+                          "message": {
+                            "type": "string",
+                            "example": "\"type\" is required"
+                          },
+                          "path": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "example": [
+                                "type"
+                              ]
+                            }
+                          },
+                          "type": {
+                            "type": "string",
+                            "example": "any.required"
+                          },
+                          "context": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string",
+                                "example": "type"
+                              },
+                              "key": {
+                                "type": "string",
+                                "example": "type"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401C": {
+        "description": "UnauthorizedError",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "UnauthorizedError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Session not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "404C": {
+        "description": "NotFoundError",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "NotFoundError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Information of categories for type not found"
                     }
                   }
                 }

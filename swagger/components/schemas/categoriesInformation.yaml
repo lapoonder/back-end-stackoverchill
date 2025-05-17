@@ -1,0 +1,18 @@
+type: object
+required:
+  - _id
+  - name
+  - type
+properties:
+  _id:
+    description: 'Category id'
+    type: string
+    example: 65e4decdd286b30065d54af9
+  name:
+    description: 'Category'
+    type: string
+    example: 'Incomes'
+  type:
+    description: 'Type category'
+    type: string
+    example: 'income'
