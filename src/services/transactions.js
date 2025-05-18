@@ -5,8 +5,7 @@ import createHttpError from 'http-errors';
 export const getAllTransactions = ({ userId }) =>
   TransactionsCollection.find({ userId });
 
-export const getTransactionById = (id, userId) =>
-    TransactionsCollection.findById({ _id: id, userId });
+export const getTransactionById = (id) => TransactionsCollection.findById(id);
 
 
 export const createTransaction = async (payload, userId) => {

@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import { CategoriesCollection } from './category.js';
 
 const transactionsSchema = new Schema(
   {
@@ -17,6 +18,13 @@ const transactionsSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'categories',
       required: true,
+      validate: {
+        validator: async function (value) {
+        const category = await CategoriesCollection.findById(value);
+        return !!category
+      }, message: "Invalid category"
+      }
+
     },
     date: {
       type: Date,

@@ -21,12 +21,16 @@ export const getTransactionsController = async (req, res) => {
 
 export const getTransactionsByIdController = async (req, res, next) => {
   const { transactionId } = req.params;
-   const userId = req.user._id;
-  const transaction = await getTransactionById(transactionId, userId);
+  const userId = req.user._id;
+  const transaction = await getTransactionById(transactionId);
 
   if (!transaction) {
     throw createHttpError(404, 'Transaction not found');
   }
+
+   if (transaction.userId.toString() !== userId.toString()) {
+     throw createHttpError(403, 'Transaction not found');
+   }
 
   res.status(200).json({
     status: 200,
