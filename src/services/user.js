@@ -2,15 +2,12 @@ import { UsersCollection } from '../db/models/auth.js';
 import { TransactionsCollection } from '../db/models/transaction.js';
 
 export const getUserById = async (userId) => {
-  const balance = await recalculateUserBalance(userId);
   const user = await UsersCollection.findById(userId);
 
-  const cleanUser = user.toObject();
-
-  return {...cleanUser, balance };
+  return user;
 };
 
-export const recalculateUserBalance = async (userId) => {
+export const calculateUserBalance = async (userId) => {
   const transactions = await TransactionsCollection.find({ userId });
 
   const newBalance = transactions.reduce((total, transaction) => {
@@ -19,5 +16,12 @@ export const recalculateUserBalance = async (userId) => {
       : total - transaction.amount;
   }, 0);
 
-return newBalance.toFixed(2)
+  return await UsersCollection.findOneAndUpdate(
+    { _id: userId },
+    { balance: newBalance.toFixed(2) },
+    {
+      new: true,
+      includeResultMetadata: true,
+    },
+  );
 };

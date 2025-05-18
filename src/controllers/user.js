@@ -1,4 +1,4 @@
-import { getUserById, recalculateUserBalance } from '../services/user.js';
+import { getUserById} from '../services/user.js';
 import createHttpError from 'http-errors';
 
 export const getUserByIdController = async (req, res) => {

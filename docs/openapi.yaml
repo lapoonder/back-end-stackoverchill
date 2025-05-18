@@ -46,7 +46,7 @@ paths:
       $ref: ../swagger/paths/transactions/{id}/put.yaml
     delete:
       $ref: ../swagger/paths/transactions/{id}/delete.yaml
-  /contacts:
+  /transactions:
     get:
       $ref: ../swagger/paths/transactions/get.yaml
     post:

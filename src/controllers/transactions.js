@@ -4,14 +4,13 @@ import {
   createTransaction,
   deleteTransaction,
   updateTransaction,
-  // getSummary,
 } from '../services/transactions.js';
 import createHttpError from 'http-errors';
 
 export const getTransactionsController = async (req, res) => {
   const userId = req.user._id;
   const transactions = await getAllTransactions({userId});
-
+console.log(req.user.balance);
   res.status(200).json({
     status: 200,
     message: 'Successfully found transactions!',

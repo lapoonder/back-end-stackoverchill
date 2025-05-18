@@ -553,7 +553,7 @@
         }
       }
     },
-    "/contacts": {
+    "/transactions": {
       "get": {
         "tags": [
           "Transactions"
