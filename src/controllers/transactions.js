@@ -6,11 +6,12 @@ import {
   updateTransaction,
 } from '../services/transactions.js';
 import createHttpError from 'http-errors';
+import { calculateUserBalance } from '../services/user.js';
 
 export const getTransactionsController = async (req, res) => {
   const userId = req.user._id;
   const transactions = await getAllTransactions({userId});
-console.log(req.user.balance);
+
   res.status(200).json({
     status: 200,
     message: 'Successfully found transactions!',
@@ -43,6 +44,8 @@ export const createTransactionController = async (req, res) => {
     message: `Successfully created a transaction!`,
     data: transaction,
   });
+
+  await calculateUserBalance(req.user._id);
 };
 
 export const patchTransactionController = async (req, res, next) => {
@@ -59,6 +62,8 @@ export const patchTransactionController = async (req, res, next) => {
     message: `Successfully patched a transaction!`,
     data: result,
   });
+
+  await calculateUserBalance(req.user._id);
 };
 
 export const deleteTransactionController = async (req, res) => {
@@ -71,6 +76,8 @@ export const deleteTransactionController = async (req, res) => {
   }
 
   res.status(204).send();
+
+  await calculateUserBalance(req.user._id);
 };
 
 export const upsertTransactionController = async (req, res, next) => {
@@ -91,4 +98,6 @@ export const upsertTransactionController = async (req, res, next) => {
     message: 'Sucessfully update a transaction',
     data: transaction,
   });
+
+  await calculateUserBalance(req.user._id);
 };
