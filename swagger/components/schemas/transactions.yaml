@@ -1,1 +1,38 @@
-
+type: object
+required:
+  - _id
+  - userId
+  - type
+  - categoryId
+  - date
+  - amount
+properties:
+  _id:
+    description: "Transaction's id"
+    type: string
+    example: 65e4decdd286b30065d54af9
+  userId:
+    description: "Transaction's user id"
+    type: string
+    example: 65e4decdd286b30065d54af9
+  type:
+    description: 'Type of transaction'
+    type: string
+    enum: ['income', 'expense']
+    default: 'expense'
+  categoryId:
+    description: "Id of transaction category"
+    type: string
+    example: '65e4decdd286b30065d54af9'
+  date:
+    description: "Date of transaction"
+    type: string
+    example: '2025-05-17'
+  amount:
+    description: "Transaction's amount"
+    type: number
+    example: 200
+  comment:
+    description: "Transaction's comment"
+    type: string
+    example: 'bought bread'

@@ -7,7 +7,7 @@ const categoriesSchema = new Schema(
       type: String,
       required: true,
       enum: ['income', 'expense'],
-      default: 'income',
+      default: 'expense',
     },
   },
   {

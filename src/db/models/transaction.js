@@ -7,18 +7,20 @@ const transactionsSchema = new Schema(
       ref: 'users',
       required: true,
     },
+    type: {
+      type: String,
+      required: true,
+      enum: ['income', 'expense'],
+      default: 'expense',
+    },
     categoryId: {
       type: Schema.Types.ObjectId,
       ref: 'categories',
       required: true,
     },
     date: {
-      type: String,
+      type: Date,
       required: true,
-      validate: {
-        validator: (v) => /^\d{4}-\d{2}-\d{2}$/.test(v),
-        message: 'Дата должна быть в формате ГГГГ-ММ-ДД',
-      },
     },
     amount: {
       type: Number,

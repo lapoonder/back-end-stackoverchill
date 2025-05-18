@@ -37,6 +37,20 @@ paths:
   /categories/{type}:
     get:
       $ref: ../swagger/paths/categories/{type}/get.yaml
+  /transactions/{id}:
+    get:
+      $ref: ../swagger/paths/transactions/{id}/get.yaml
+    patch:
+      $ref: ../swagger/paths/transactions/{id}/patch.yaml
+    put:
+      $ref: ../swagger/paths/transactions/{id}/put.yaml
+    delete:
+      $ref: ../swagger/paths/transactions/{id}/delete.yaml
+  /transactions:
+    get:
+      $ref: ../swagger/paths/transactions/get.yaml
+    post:
+      $ref: ../swagger/paths/transactions/post.yaml
 components:
   schemas:
     UserRegister:
