@@ -1,0 +1,45 @@
+type: object
+required:
+  - expense
+  - income
+  - totalExpense
+  - totalIncome
+properties:
+  expense:
+    type: array
+    description: List of expense items
+    items:
+      type: object
+      required:
+        - name
+        - sum
+      properties:
+        name:
+          type: string
+          example: 'Main expenses'
+        sum:
+          type: number
+          example: 100
+  income:
+    type: array
+    description: List of income items
+    items:
+      type: object
+      required:
+        - name
+        - sum
+      properties:
+        name:
+          type: string
+          example: 'Incomes'
+        sum:
+          type: number
+          example: 4000
+  totalExpense:
+    type: number
+    description: The total amount of all expenses
+    example: 2890
+  totalIncome:
+    type: number
+    description: The total amount of all income
+    example: 4000
