@@ -21,7 +21,7 @@ export const createTransactionSchema = Joi.object({
 });
 
 export const updateTransactionSchema = Joi.object({
-  type: Joi.string().valid('income', 'expense'),
+  type: Joi.string().valid('income', 'expense').forbidden(),
   date: Joi.date().iso(),
   amount: Joi.number().min(0.01).max(1000000),
   comment: Joi.string().min(2).max(192),
