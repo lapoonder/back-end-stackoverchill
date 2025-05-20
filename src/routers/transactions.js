@@ -16,6 +16,7 @@ import {
   createTransactionSchema,
   updateTransactionSchema,
 } from '../validation/transactions.js';
+import { isValidExistsCategoryId } from '../middlewares/isValidExistsCategoryId.js';
 
 const router = Router();
 
@@ -33,6 +34,7 @@ router.get(
 router.post(
   '/',
   checkUser(),
+  isValidExistsCategoryId,
   validateBody(createTransactionSchema),
   ctrlWrapper(createTransactionController),
 );
@@ -48,6 +50,7 @@ router.put(
   '/:transactionId',
   checkUser(),
   isValidId,
+  isValidExistsCategoryId,
   validateBody(createTransactionSchema),
   ctrlWrapper(upsertTransactionController),
 );
@@ -56,6 +59,7 @@ router.patch(
   '/:transactionId',
   checkUser(),
   isValidId,
+  isValidExistsCategoryId,
   validateBody(updateTransactionSchema),
   ctrlWrapper(patchTransactionController),
 );

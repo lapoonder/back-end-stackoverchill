@@ -7,7 +7,6 @@ import {
   getSummary,
 } from '../services/transactions.js';
 import createHttpError from 'http-errors';
-import { calculateUserBalance } from '../services/user.js';
 
 export const getTransactionsController = async (req, res) => {
   const userId = req.user._id;
@@ -38,21 +37,21 @@ export const getTransactionsByIdController = async (req, res, next) => {
 
 export const createTransactionController = async (req, res) => {
   const userId = req.user._id;
-  const transaction = await createTransaction(req.body, userId);
+  const balance = req.user.balance;
+  const transaction = await createTransaction(req.body, userId, balance);
 
   res.status(201).json({
     status: 201,
     message: `Successfully created a transaction!`,
     data: transaction,
   });
-
-  await calculateUserBalance(req.user._id);
 };
 
 export const patchTransactionController = async (req, res, next) => {
   const { transactionId } = req.params;
   const userId = req.user._id;
-  const result = await updateTransaction(transactionId, userId, req.body);
+  const balance = req.user.balance;
+  const result = await updateTransaction(transactionId, userId, balance, req.body);
 
   if (!result) {
     throw createHttpError(404, 'Transaction not found');
@@ -63,22 +62,23 @@ export const patchTransactionController = async (req, res, next) => {
     message: `Successfully patched a transaction!`,
     data: result,
   });
-
-  await calculateUserBalance(req.user._id);
 };
 
 export const deleteTransactionController = async (req, res) => {
   const { transactionId } = req.params;
   const userId = req.user._id;
-  const transaction = await deleteTransaction(transactionId, userId);
+  const balance = req.user.balance;
+  const result = await deleteTransaction(transactionId, userId, balance);
 
-  if (!transaction) {
+  if (!result.transaction) {
     throw createHttpError(404, 'Transaction not found');
   }
 
-  res.status(204).send();
-
-  await calculateUserBalance(req.user._id);
+  res.status(200).json({
+    status: 200,
+    message: `Successfully delete a transaction!`,
+    data: result.balance,
+  });;
 };
 
 export const upsertTransactionController = async (req, res, next) => {
@@ -104,8 +104,6 @@ export const upsertTransactionController = async (req, res, next) => {
     message: 'Sucessfully update a transaction',
     data: transaction,
   });
-
-  await calculateUserBalance(req.user._id);
 };
 
 export const getSummaryController = async (req, res, next) => {

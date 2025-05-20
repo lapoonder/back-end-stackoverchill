@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import { CategoriesCollection } from './category.js';
 
 const transactionsSchema = new Schema(
   {
@@ -12,6 +13,7 @@ const transactionsSchema = new Schema(
       required: true,
       enum: ['income', 'expense'],
       default: 'expense',
+      immutable: true,
     },
     categoryId: {
       type: Schema.Types.ObjectId,
