@@ -171,7 +171,7 @@
             "$ref": "#/components/responses/401user"
           },
           "404": {
-            "$ref": "#/components/responses/404"
+            "$ref": "#/components/responses/404-u"
           }
         }
       }
@@ -277,7 +277,7 @@
             "$ref": "#/components/responses/401"
           },
           "404": {
-            "$ref": "#/components/responses/404-2"
+            "$ref": "#/components/responses/404"
           }
         }
       },
@@ -381,7 +381,7 @@
             "$ref": "#/components/responses/401"
           },
           "404": {
-            "$ref": "#/components/responses/404-2"
+            "$ref": "#/components/responses/404"
           }
         }
       },
@@ -514,7 +514,7 @@
             "$ref": "#/components/responses/401"
           },
           "404": {
-            "$ref": "#/components/responses/404-2"
+            "$ref": "#/components/responses/404"
           }
         }
       },
@@ -552,7 +552,7 @@
             "$ref": "#/components/responses/401"
           },
           "404": {
-            "$ref": "#/components/responses/404-2"
+            "$ref": "#/components/responses/404"
           }
         }
       }
@@ -1231,7 +1231,7 @@
         }
       },
       "404": {
-        "description": "NotFoundError",
+        "description": "Not found error",
         "content": {
           "application/json": {
             "schema": {
@@ -1258,7 +1258,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "Not found"
+                      "example": "Transaction not found"
                     }
                   }
                 }
@@ -1408,6 +1408,43 @@
                     "message": {
                       "type": "string",
                       "example": "Access token expired"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "404-u": {
+        "description": "NotFoundError",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "NotFoundError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Not found"
                     }
                   }
                 }
@@ -1624,43 +1661,6 @@
                     "message": {
                       "type": "string",
                       "example": "This id is not valid"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "404-2": {
-        "description": "Not found error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "required": [
-                "status",
-                "message",
-                "data"
-              ],
-              "properties": {
-                "status": {
-                  "type": "integer",
-                  "example": 404
-                },
-                "message": {
-                  "type": "string",
-                  "example": "NotFoundError"
-                },
-                "data": {
-                  "type": "object",
-                  "required": [
-                    "message"
-                  ],
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Transaction not found"
                     }
                   }
                 }
