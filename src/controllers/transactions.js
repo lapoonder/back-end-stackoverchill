@@ -4,13 +4,14 @@ import {
   createTransaction,
   deleteTransaction,
   updateTransaction,
+  getSummary,
 } from '../services/transactions.js';
 import createHttpError from 'http-errors';
 import { calculateUserBalance } from '../services/user.js';
 
 export const getTransactionsController = async (req, res) => {
   const userId = req.user._id;
-  const transactions = await getAllTransactions({userId});
+  const transactions = await getAllTransactions({ userId });
 
   res.status(200).json({
     status: 200,
@@ -21,7 +22,7 @@ export const getTransactionsController = async (req, res) => {
 
 export const getTransactionsByIdController = async (req, res, next) => {
   const { transactionId } = req.params;
-   const userId = req.user._id;
+  const userId = req.user._id;
   const transaction = await getTransactionById(transactionId, userId);
 
   if (!transaction) {
@@ -83,9 +84,14 @@ export const deleteTransactionController = async (req, res) => {
 export const upsertTransactionController = async (req, res, next) => {
   const { transactionId } = req.params;
   const userId = req.user._id;
-  const { transaction, isNew } = await updateTransaction(transactionId, userId, req.body, {
-    upsert: true,
-  });
+  const { transaction, isNew } = await updateTransaction(
+    transactionId,
+    userId,
+    req.body,
+    {
+      upsert: true,
+    },
+  );
 
   const status = isNew ? 201 : 200;
 
@@ -100,4 +106,25 @@ export const upsertTransactionController = async (req, res, next) => {
   });
 
   await calculateUserBalance(req.user._id);
+};
+
+export const getSummaryController = async (req, res, next) => {
+  const { period } = req.params;
+  const userId = req.user._id;
+
+  const { expense, income, totalExpense, totalIncome } = await getSummary(
+    period,
+    userId,
+  );
+
+  res.status(200).json({
+    status: 200,
+    message: `Successfully found summary!`,
+    data: {
+      expense,
+      income,
+      totalExpense,
+      totalIncome,
+    },
+  });
 };

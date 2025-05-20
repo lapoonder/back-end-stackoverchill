@@ -1,4 +1,5 @@
 import { UsersCollection } from '../db/models/auth.js';
+import { CategoriesCollection } from '../db/models/category.js';
 import { TransactionsCollection } from '../db/models/transaction.js';
 import createHttpError from 'http-errors';
 
@@ -6,17 +7,16 @@ export const getAllTransactions = ({ userId }) =>
   TransactionsCollection.find({ userId });
 
 export const getTransactionById = (id, userId) =>
-    TransactionsCollection.findById({ _id: id, userId });
-
+  TransactionsCollection.findById({ _id: id, userId });
 
 export const createTransaction = async (payload, userId) => {
-    const transaction = await TransactionsCollection.create({
-      userId,
-      ...payload,
-    });
+  const transaction = await TransactionsCollection.create({
+    userId,
+    ...payload,
+  });
 
-    return transaction;
-}
+  return transaction;
+};
 
 export const deleteTransaction = async (contactId, userId) => {
   const transaction = await TransactionsCollection.findOneAndDelete({
@@ -27,11 +27,14 @@ export const deleteTransaction = async (contactId, userId) => {
   return transaction;
 };
 
-export const updateTransaction = async (transactionId, userId, payload, options = {}) => {
-
+export const updateTransaction = async (
+  transactionId,
+  userId,
+  payload,
+  options = {},
+) => {
   const rawResult = await TransactionsCollection.findOneAndUpdate(
-    { _id: transactionId,
-    userId},
+    { _id: transactionId, userId },
     payload,
     {
       new: true,
@@ -48,4 +51,70 @@ export const updateTransaction = async (transactionId, userId, payload, options 
   };
 };
 
+export const getSummary = async (period, userId) => {
+  //Перевіряємо дату
+  const isValidPeriod = /^\d{4}-(0[1-9]|1[0-2])$/.test(period);
 
+  if (!isValidPeriod) {
+    throw createHttpError(
+      400,
+      `Invalid period format '${period}'. Expected 'YYYY-MM'!`,
+    );
+  }
+
+  //формуємо період дат, за який потрібна інформація
+  const startDate = new Date(Date.parse(period));
+  const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1);
+
+  //вибираємо всі транзакції користувача за період
+  const transactions = await TransactionsCollection.find({
+    date: {
+      $gte: startDate,
+      $lte: endDate,
+    },
+    userId,
+  })
+    .select('type categoryId amount')
+    .lean();
+
+  //вибираємо всі категорії
+  const categories = await CategoriesCollection.find()
+    .select('-createdAt -updatedAt')
+    .lean();
+
+  //підраховуємо загальну сумму транзакцій по кожній категорії
+  categories.map((category) => {
+    category.sum = transactions.reduce(
+      (total, transaction) =>
+        transaction.categoryId.toString() === category._id.toString()
+          ? total + transaction.amount
+          : total,
+      0,
+    );
+  });
+
+  //Вибираємо в новий обєкт суми транзакцій по типу expense
+  const expense = categories
+    .filter((category) => category.type === 'expense')
+    .map(({ name, sum }) => ({ name, sum }));
+
+  //Вибираємо в новий обєкт суми транзакцій по типу income
+  const income = categories
+    .filter((category) => category.type === 'income')
+    .map(({ name, sum }) => ({ name, sum }));
+
+  //Підраховуємо загальну сумму по кожному типу транзакції
+  const totalExpense = expense.reduce((total, transaction) => {
+    return total + transaction.sum;
+  }, 0);
+  const totalIncome = income.reduce((total, transaction) => {
+    return total + transaction.sum;
+  }, 0);
+
+  return {
+    expense,
+    income,
+    totalExpense,
+    totalIncome,
+  };
+};

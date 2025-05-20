@@ -1,0 +1,21 @@
+summary: Get amounts of expenses and income by category for the period
+tags:
+  - Summary
+operationId: getSummary
+description: Get amounts of expenses and income by category for the period
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: period
+    required: true
+    schema:
+      type: string
+      example: '2025-05'
+responses:
+  '200':
+    $ref: ../../../components/responses/summary/200S.yaml
+  '400':
+    $ref: '../../../components/responses/summary/400S.yaml'
+  '401':
+    $ref: '../../../components/responses/summary/401S.yaml'

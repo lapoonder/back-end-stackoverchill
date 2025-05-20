@@ -33,6 +33,10 @@
     {
       "name": "Transactions",
       "description": "Finance operations"
+    },
+    {
+      "name": "Summary",
+      "description": "Amounts of expenses and income by category for the period"
     }
   ],
   "paths": {
@@ -704,6 +708,43 @@
           }
         }
       }
+    },
+    "/summary/{period}": {
+      "get": {
+        "summary": "Get amounts of expenses and income by category for the period",
+        "tags": [
+          "Summary"
+        ],
+        "operationId": "getSummary",
+        "description": "Get amounts of expenses and income by category for the period",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "period",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2025-05"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200S"
+          },
+          "400": {
+            "$ref": "#/components/responses/400S"
+          },
+          "401": {
+            "$ref": "#/components/responses/401S"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -948,6 +989,69 @@
             "description": "Transaction's comment",
             "type": "string",
             "example": "bought bread"
+          }
+        }
+      },
+      "summary": {
+        "type": "object",
+        "required": [
+          "expense",
+          "income",
+          "totalExpense",
+          "totalIncome"
+        ],
+        "properties": {
+          "expense": {
+            "type": "array",
+            "description": "List of expense items",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "sum"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Main expenses"
+                },
+                "sum": {
+                  "type": "number",
+                  "example": 100
+                }
+              }
+            }
+          },
+          "income": {
+            "type": "array",
+            "description": "List of income items",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "sum"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Incomes"
+                },
+                "sum": {
+                  "type": "number",
+                  "example": 4000
+                }
+              }
+            }
+          },
+          "totalExpense": {
+            "type": "number",
+            "description": "The total amount of all expenses",
+            "example": 2890
+          },
+          "totalIncome": {
+            "type": "number",
+            "description": "The total amount of all income",
+            "example": 4000
           }
         }
       }
@@ -1557,6 +1661,103 @@
                     "message": {
                       "type": "string",
                       "example": "Transaction not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "200S": {
+        "description": "List of categories",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Successfully found summary!"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/summary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "400S": {
+        "description": "BadRequestError",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "BadRequestError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid period format '2025-055'. Expected 'YYYY-MM'!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401S": {
+        "description": "UnauthorizedError",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "UnauthorizedError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Please provide Authorization header"
                     }
                   }
                 }

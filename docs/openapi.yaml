@@ -18,6 +18,8 @@ tags:
     description: Categories and types of financial transactions
   - name: Transactions
     description: Finance operations
+  - name: Summary
+    description: Amounts of expenses and income by category for the period
 paths:
   /auth/register:
     post:
@@ -51,6 +53,9 @@ paths:
       $ref: ../swagger/paths/transactions/get.yaml
     post:
       $ref: ../swagger/paths/transactions/post.yaml
+  /summary/{period}:
+    get:
+      $ref: ../swagger/paths/summary/{period}/get.yaml
 components:
   schemas:
     UserRegister:
