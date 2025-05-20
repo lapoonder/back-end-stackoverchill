@@ -13,18 +13,12 @@ const transactionsSchema = new Schema(
       required: true,
       enum: ['income', 'expense'],
       default: 'expense',
+      immutable: true,
     },
     categoryId: {
       type: Schema.Types.ObjectId,
       ref: 'categories',
       required: true,
-      validate: {
-        validator: async function (value) {
-        const category = await CategoriesCollection.findById(value);
-        return !!category
-      }, message: "Invalid category"
-      }
-
     },
     date: {
       type: Date,
