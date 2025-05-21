@@ -19,6 +19,8 @@ const usersSchema = new Schema(
 usersSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;
+  delete obj.createdAt;
+  delete obj.updatedAt;
   obj.balance = Number(obj.balance).toFixed(2);
   return obj;
 };
