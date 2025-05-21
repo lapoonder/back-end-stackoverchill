@@ -1,6 +1,6 @@
 summary: Get information about user
 tags:
-  - User
+  - Users
 operationId: getUser
 description: Get information about user.
 security:
