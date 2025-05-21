@@ -9,4 +9,27 @@ responses:
   '204':
     $ref: ../../components/responses/noContent.yaml
   '401':
-    $ref: '../../components/responses/auth/401Token.yaml'
+    description: Invalid or expired token
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: Invalid or expired token
+            data:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  example: 'Unauthorized'

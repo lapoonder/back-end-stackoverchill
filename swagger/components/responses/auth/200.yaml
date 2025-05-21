@@ -11,4 +11,7 @@ content:
           type: string
           example: Successfully refreshed a session!
         data:
-          $ref: ../../schemas/tokens.yaml
+          type: object
+          properties:
+            accessToken:
+              type: string

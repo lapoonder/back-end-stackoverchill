@@ -55,15 +55,6 @@ paths:
     get:
       $ref: ../swagger/paths/summary/{period}/get.yaml
 components:
-  schemas:
-    UserRegister:
-      $ref: ../swagger/components/schemas/userRegister.yaml
-    UserLogin:
-      $ref: ../swagger/components/schemas/userLogin.yaml
-    Tokens:
-      $ref: ../swagger/components/schemas/tokens.yaml
-    UserInformation:
-      $ref: ../swagger/components/schemas/userInformation.yaml
   responses:
     CreatedUser:
       $ref: ../swagger/components/responses/auth/201.yaml
