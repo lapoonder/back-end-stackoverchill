@@ -109,6 +109,19 @@ export const getSummary = async (period, userId) => {
   const startDate = new Date(Date.parse(period));
   const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1);
 
+  const categories = await CategoriesCollection.find()
+    .select('name type')
+    .lean();
+
+  // Уникальные типы категорий
+  const categoryTypes = [...new Set(categories.map((cat) => cat.type))];
+
+  // Динамически создаём summaryMap по всем типам
+  const summaryMap = {};
+  categoryTypes.forEach((type) => {
+    summaryMap[type] = new Map();
+  });
+
   // Получаем транзакции пользователя за период
   const transactions = await TransactionsCollection.find({
     date: { $gte: startDate, $lte: endDate },
@@ -120,20 +133,6 @@ export const getSummary = async (period, userId) => {
     })
     .select('categoryId amount')
     .lean();
-
-  if (!transactions.length) {
-    return {
-      expense: [],
-      income: [],
-      totalExpense: 0,
-      totalIncome: 0,
-    };
-  }
-
-  const summaryMap = {
-    income: new Map(),
-    expense: new Map(),
-  };
 
   for (const transaction of transactions) {
     const category = transaction.categoryId;
@@ -147,22 +146,21 @@ export const getSummary = async (period, userId) => {
     summaryMap[type].set(name, currentSum + amount);
   }
 
-  const expense = Array.from(summaryMap.expense, ([name, sum]) => ({
-    name,
-    sum,
-  }));
-  const income = Array.from(summaryMap.income, ([name, sum]) => ({
-    name,
-    sum,
-  }));
+  const result = {};
+  for (const type of categoryTypes) {
+    result[type] = categories
+      .filter((cat) => cat.type === type)
+      .map(({ name }) => ({
+        name,
+        sum: summaryMap[type].get(name) || 0,
+      }));
+  }
 
-  const totalExpense = expense.reduce((total, item) => total + item.sum, 0);
-  const totalIncome = income.reduce((total, item) => total + item.sum, 0);
+  for (const type of categoryTypes) {
+    result[`total${type[0].toUpperCase()}${type.slice(1)}`] = result[
+      type
+    ].reduce((total, item) => total + item.sum, 0);
+  }
 
-  return {
-    expense,
-    income,
-    totalExpense,
-    totalIncome,
-  };
+  return result;
 };
