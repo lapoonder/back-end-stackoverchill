@@ -12,7 +12,7 @@ servers:
 tags:
   - name: Auth
     description: Authentication endpoints
-  - name: User
+  - name: Users
     description: Get information about user
   - name: Categories
     description: Categories and types of financial transactions
@@ -33,9 +33,9 @@ paths:
   /auth/logout:
     post:
       $ref: ../swagger/paths/auth/logout.yaml
-  /user:
+  /users:
     get:
-      $ref: ../swagger/paths/user/get.yaml
+      $ref: ../swagger/paths/users/get.yaml
   /categories/{type}:
     get:
       $ref: ../swagger/paths/categories/{type}/get.yaml

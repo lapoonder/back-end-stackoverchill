@@ -8,7 +8,7 @@ import summaryRouter from './summary.js';
 const router = Router();
 
 router.use('/auth', authRouter);
-router.use('/user', userRouter);
+router.use('/users', userRouter);
 router.use('/categories', categoriesRouter);
 router.use('/transactions', transactionsRouter);
 

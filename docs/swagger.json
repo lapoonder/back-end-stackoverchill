@@ -23,7 +23,7 @@
       "description": "Authentication endpoints"
     },
     {
-      "name": "User",
+      "name": "Users",
       "description": "Get information about user"
     },
     {
@@ -218,11 +218,11 @@
         }
       }
     },
-    "/user": {
+    "/users": {
       "get": {
         "summary": "Get information about user",
         "tags": [
-          "User"
+          "Users"
         ],
         "operationId": "getUser",
         "description": "Get information about user.",
@@ -625,11 +625,15 @@
                   "amount": {
                     "description": "Transaction's amount",
                     "type": "number",
+                    "minimum": 0.01,
+                    "maximum": 1000000,
                     "example": 200
                   },
                   "comment": {
                     "description": "Transaction's comment",
                     "type": "string",
+                    "minLength": 2,
+                    "maxLength": 192,
                     "example": "bought bread"
                   }
                 }
