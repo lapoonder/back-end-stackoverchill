@@ -11,22 +11,16 @@ requestBody:
       schema:
         type: object
         required:
-          - type
           - categoryId
           - date
           - amount
         properties:
-          type:
-            description: 'Type of transaction'
-            type: string
-            enum: ['income', 'expense']
-            default: 'expense'
           categoryId:
-            description: "Id of transaction category"
+            description: 'Id of transaction category'
             type: string
             example: '65e4decdd286b30065d54af9'
           date:
-            description: "Date of transaction"
+            description: 'Date of transaction'
             type: string
             example: '2025-05-17'
           amount:
@@ -57,6 +51,17 @@ responses:
               example: Successfully created a transaction!
             data:
               type: object
-              $ref: '../../components/schemas/transactions.yaml'
+              required:
+                - transaction
+                - balance
+              properties:
+                transaction:
+                  $ref: '../../components/schemas/transactions.yaml'
+                balance:
+                  type: number
+                  format: float
+                  example: 4000.00
+  '400':
+    $ref: ../../components/responses/400Id.yaml
   '401':
     $ref: '../../components/responses/auth/401.yaml'

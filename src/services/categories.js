@@ -14,5 +14,5 @@ export const getCategoriesById = async (id) => {
   const category = await CategoriesCollection.findOne({
     _id: id,
   }).select('-createdAt -updatedAt');
-  return category;
+  return category?.type;
 };
