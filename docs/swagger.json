@@ -310,15 +310,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "type": {
-                    "description": "Type of transaction",
-                    "type": "string",
-                    "enum": [
-                      "income",
-                      "expense"
-                    ],
-                    "default": "expense"
-                  },
                   "categoryId": {
                     "description": "Id of transaction category",
                     "type": "string",
@@ -367,140 +358,20 @@
                     },
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/transactions"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/400Id"
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Transactions"
-        ],
-        "summary": "Update or add transaction by id",
-        "operationId": "putTransaction",
-        "description": "Update or add transaction by id",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "65ca67e7ae7f10c88b598384"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "description": "Type of transaction",
-                    "type": "string",
-                    "enum": [
-                      "income",
-                      "expense"
-                    ],
-                    "default": "expense"
-                  },
-                  "categoryId": {
-                    "description": "Id of transaction category",
-                    "type": "string",
-                    "example": "65e4decdd286b30065d54af9"
-                  },
-                  "date": {
-                    "description": "Date of transaction",
-                    "type": "string",
-                    "example": "2025-05-17"
-                  },
-                  "amount": {
-                    "description": "Transaction's amount",
-                    "type": "number",
-                    "example": 200
-                  },
-                  "comment": {
-                    "description": "Transaction's comment",
-                    "type": "string",
-                    "example": "bought bread"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Update transaction by id",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Successfully update a contact!"
-                    },
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/transactions"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "201": {
-            "description": "Creates a transaction by id",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 201
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Successfully update a transaction!"
-                    },
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/transactions"
+                      "required": [
+                        "transaction",
+                        "balance"
+                      ],
+                      "properties": {
+                        "transaction": {
+                          "$ref": "#/components/schemas/transactions"
+                        },
+                        "balance": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 4000
+                        }
+                      }
                     }
                   }
                 }
@@ -542,8 +413,43 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Delete transaction by id. No content"
+          "200": {
+            "description": "Successfully found transactions!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully delete a transaction!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "balance"
+                      ],
+                      "properties": {
+                        "balance": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 4000
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/400Id"
@@ -633,21 +539,11 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "type",
                   "categoryId",
                   "date",
                   "amount"
                 ],
                 "properties": {
-                  "type": {
-                    "description": "Type of transaction",
-                    "type": "string",
-                    "enum": [
-                      "income",
-                      "expense"
-                    ],
-                    "default": "expense"
-                  },
                   "categoryId": {
                     "description": "Id of transaction category",
                     "type": "string",
@@ -696,12 +592,28 @@
                     },
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/transactions"
+                      "required": [
+                        "transaction",
+                        "balance"
+                      ],
+                      "properties": {
+                        "transaction": {
+                          "$ref": "#/components/schemas/transactions"
+                        },
+                        "balance": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 4000
+                        }
+                      }
                     }
                   }
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Id"
           },
           "401": {
             "$ref": "#/components/responses/401"
@@ -945,7 +857,6 @@
         "required": [
           "_id",
           "userId",
-          "type",
           "categoryId",
           "date",
           "amount"
@@ -960,15 +871,6 @@
             "description": "Transaction's user id",
             "type": "string",
             "example": "65e4decdd286b30065d54af9"
-          },
-          "type": {
-            "description": "Type of transaction",
-            "type": "string",
-            "enum": [
-              "income",
-              "expense"
-            ],
-            "default": "expense"
           },
           "categoryId": {
             "description": "Id of transaction category",

@@ -1,4 +1,5 @@
-import { UsersCollection } from '../db/models/auth.js';
+import createHttpError from 'http-errors';
+import { getCategoriesById } from '../services/categories.js';
 import { CategoriesCollection } from '../db/models/category.js';
 import { TransactionsCollection } from '../db/models/transaction.js';
 import { updateBalance } from './user.js';
@@ -6,42 +7,60 @@ import { updateBalance } from './user.js';
 export const getAllTransactions = ({ userId }) =>
   TransactionsCollection.find({ userId });
 
-export const getTransactionById = (id, userId) => TransactionsCollection.findOne({ _id: id, userId })
+export const getTransactionById = (id, userId) =>
+  TransactionsCollection.findOne({ _id: id, userId });
 
-export const createTransaction = async (payload, userId, balance) => {
-    const transaction = await TransactionsCollection.create({
-      userId,
-      ...payload,
-    });
+export const createTransaction = async (payload, userId, balance, type) => {
+  const transaction = await TransactionsCollection.create({
+    userId,
+    ...payload,
+  });
 
-  const newBalance = transaction.type === 'income' ? balance + transaction.amount : balance - transaction.amount
+  const newBalance =
+    type === 'income'
+      ? balance + transaction.amount
+      : balance - transaction.amount;
 
   const updatedBalance = await updateBalance(newBalance, userId);
 
   return { transaction, balance: updatedBalance };
-}
+};
 
-export const deleteTransaction = async (contactId, userId, balance) => {
+export const deleteTransaction = async (transactionId, userId, balance) => {
   const transaction = await TransactionsCollection.findOneAndDelete({
-    _id: contactId,
+    _id: transactionId,
     userId,
   });
 
-    const newBalance =
-      transaction.type === 'income'
-        ? balance - transaction.amount
-        : balance + transaction.amount;
+  const newBalance = balance + transaction.amount;
 
   const updatedBalance = await updateBalance(newBalance, userId);
-  return {transaction, balance: updatedBalance};
+  return { transaction, balance: updatedBalance };
 };
 
-export const updateTransaction = async (transactionId, userId, balance, payload, options = {}) => {
+export const updateTransaction = async (
+  transactionId,
+  userId,
+  balance,
+  payload,
+  options = {},
+) => {
+  const transaction = await TransactionsCollection.findOne({
+    _id: transactionId,
+    userId,
+  });
 
-   const transaction = await TransactionsCollection.findOne({
-     _id: transactionId,
-     userId,
-   });
+  const [newCategory, oldCategory] = await Promise.all([
+    getCategoriesById(payload.categoryId),
+    getCategoriesById(transaction?.categoryId),
+  ]);
+
+  if (newCategory !== oldCategory) {
+    throw createHttpError(
+      400,
+      'The new transaction category type is different from the existing one!',
+    );
+  }
 
   const rawResult = await TransactionsCollection.findOneAndUpdate(
     { _id: transactionId, userId },
@@ -53,22 +72,19 @@ export const updateTransaction = async (transactionId, userId, balance, payload,
     },
   );
 
-    if (!rawResult || !rawResult.value) return null;
+  if (!rawResult || !rawResult.value) return null;
 
   if (payload.amount !== transaction.amount) {
-    const diffrence = payload.amount - transaction.amount;
-    const newBalance =
-      rawResult.value.type === 'income'
-        ? balance + diffrence
-        : balance - diffrence;
+    const diffrence = transaction.amount - payload.amount;
+    const newBalance = balance + diffrence;
 
-      const updatedBalance = await updateBalance(newBalance, userId);
+    const updatedBalance = await updateBalance(newBalance, userId);
 
-  return {
-    transaction: rawResult.value,
-    balance: updatedBalance,
-    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
-  };
+    return {
+      transaction: rawResult.value,
+      balance: updatedBalance,
+      isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+    };
   }
 
   return {
@@ -93,50 +109,55 @@ export const getSummary = async (period, userId) => {
   const startDate = new Date(Date.parse(period));
   const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1);
 
-  //вибираємо всі транзакції користувача за період
+  // Получаем транзакции пользователя за период
   const transactions = await TransactionsCollection.find({
-    date: {
-      $gte: startDate,
-      $lte: endDate,
-    },
+    date: { $gte: startDate, $lte: endDate },
     userId,
   })
-    .select('type categoryId amount')
+    .populate({
+      path: 'categoryId',
+      select: 'name type',
+    })
+    .select('categoryId amount')
     .lean();
 
-  //вибираємо всі категорії
-  const categories = await CategoriesCollection.find()
-    .select('-createdAt -updatedAt')
-    .lean();
+  if (!transactions.length) {
+    return {
+      expense: [],
+      income: [],
+      totalExpense: 0,
+      totalIncome: 0,
+    };
+  }
 
-  //підраховуємо загальну сумму транзакцій по кожній категорії
-  categories.map((category) => {
-    category.sum = transactions.reduce(
-      (total, transaction) =>
-        transaction.categoryId.toString() === category._id.toString()
-          ? total + transaction.amount
-          : total,
-      0,
-    );
-  });
+  const summaryMap = {
+    income: new Map(),
+    expense: new Map(),
+  };
 
-  //Вибираємо в новий обєкт суми транзакцій по типу expense
-  const expense = categories
-    .filter((category) => category.type === 'expense')
-    .map(({ name, sum }) => ({ name, sum }));
+  for (const transaction of transactions) {
+    const category = transaction.categoryId;
+    if (!category?.type) continue;
 
-  //Вибираємо в новий обєкт суми транзакцій по типу income
-  const income = categories
-    .filter((category) => category.type === 'income')
-    .map(({ name, sum }) => ({ name, sum }));
+    const type = category.type;
+    const name = category.name;
+    const amount = transaction.amount;
 
-  //Підраховуємо загальну сумму по кожному типу транзакції
-  const totalExpense = expense.reduce((total, transaction) => {
-    return total + transaction.sum;
-  }, 0);
-  const totalIncome = income.reduce((total, transaction) => {
-    return total + transaction.sum;
-  }, 0);
+    const currentSum = summaryMap[type].get(name) || 0;
+    summaryMap[type].set(name, currentSum + amount);
+  }
+
+  const expense = Array.from(summaryMap.expense, ([name, sum]) => ({
+    name,
+    sum,
+  }));
+  const income = Array.from(summaryMap.income, ([name, sum]) => ({
+    name,
+    sum,
+  }));
+
+  const totalExpense = expense.reduce((total, item) => total + item.sum, 0);
+  const totalIncome = income.reduce((total, item) => total + item.sum, 0);
 
   return {
     expense,

@@ -6,6 +6,7 @@ import {
   updateTransaction,
   getSummary,
 } from '../services/transactions.js';
+import { getCategoriesById } from '../services/categories.js';
 import createHttpError from 'http-errors';
 
 export const getTransactionsController = async (req, res) => {
@@ -38,7 +39,8 @@ export const getTransactionsByIdController = async (req, res, next) => {
 export const createTransactionController = async (req, res) => {
   const userId = req.user._id;
   const balance = req.user.balance;
-  const transaction = await createTransaction(req.body, userId, balance);
+  const type = await getCategoriesById(req.body.categoryId);
+  const transaction = await createTransaction(req.body, userId, balance, type);
 
   res.status(201).json({
     status: 201,
@@ -51,7 +53,12 @@ export const patchTransactionController = async (req, res, next) => {
   const { transactionId } = req.params;
   const userId = req.user._id;
   const balance = req.user.balance;
-  const result = await updateTransaction(transactionId, userId, balance, req.body);
+  const result = await updateTransaction(
+    transactionId,
+    userId,
+    balance,
+    req.body,
+  );
 
   if (!result) {
     throw createHttpError(404, 'Transaction not found');
@@ -78,31 +85,6 @@ export const deleteTransactionController = async (req, res) => {
     status: 200,
     message: `Successfully delete a transaction!`,
     data: result.balance,
-  });;
-};
-
-export const upsertTransactionController = async (req, res, next) => {
-  const { transactionId } = req.params;
-  const userId = req.user._id;
-  const { transaction, isNew } = await updateTransaction(
-    transactionId,
-    userId,
-    req.body,
-    {
-      upsert: true,
-    },
-  );
-
-  const status = isNew ? 201 : 200;
-
-  if (!transaction) {
-    throw createHttpError(404, 'Transaction not found');
-  }
-
-  res.status(status).json({
-    status,
-    message: 'Sucessfully update a transaction',
-    data: transaction,
   });
 };
 

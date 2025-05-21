@@ -3,13 +3,12 @@ import { authenticate } from '../middlewares/authenticate.js';
 import { checkUser } from '../middlewares/checkUser.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
-import { isValidId } from '../middlewares/isValidId.js';
+import { isValidExistsTransactionId } from '../middlewares/isValidExistsTransactionId.js';
 import {
   getTransactionsController,
   getTransactionsByIdController,
   createTransactionController,
   deleteTransactionController,
-  upsertTransactionController,
   patchTransactionController,
 } from '../controllers/transactions.js';
 import {
@@ -27,7 +26,7 @@ router.get('/', checkUser(), ctrlWrapper(getTransactionsController));
 router.get(
   '/:transactionId',
   checkUser(),
-  isValidId,
+  isValidExistsTransactionId,
   ctrlWrapper(getTransactionsByIdController),
 );
 
@@ -42,23 +41,14 @@ router.post(
 router.delete(
   '/:transactionId',
   checkUser(),
-  isValidId,
+  isValidExistsTransactionId,
   ctrlWrapper(deleteTransactionController),
-);
-
-router.put(
-  '/:transactionId',
-  checkUser(),
-  isValidId,
-  isValidExistsCategoryId,
-  validateBody(createTransactionSchema),
-  ctrlWrapper(upsertTransactionController),
 );
 
 router.patch(
   '/:transactionId',
   checkUser(),
-  isValidId,
+  isValidExistsTransactionId,
   isValidExistsCategoryId,
   validateBody(updateTransactionSchema),
   ctrlWrapper(patchTransactionController),
