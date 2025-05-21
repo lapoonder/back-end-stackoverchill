@@ -4,8 +4,6 @@ required:
   - name
   - email
   - balance
-  - createdAt
-  - updatedAt
 properties:
   _id:
     description: 'User id'
@@ -14,8 +12,6 @@ properties:
   name:
     description: "User's name"
     type: string
-    minLength: 2
-    maxLength: 32
     example: 'John Doe'
   balance:
     description: 'Information about balance'
@@ -24,16 +20,4 @@ properties:
   email:
     description: "User's email"
     type: string
-    format: email
-    maxLength: 64
     example: 'johnDoe@gmail.com'
-  createdAt:
-    description: 'Data create'
-    type: string
-    format: date-time
-    example: '2025-04-08T22:44:33.327Z'
-  updatedAt:
-    description: 'Data update'
-    type: string
-    format: date-time
-    example: '2025-04-16T19:32:54.566Z'

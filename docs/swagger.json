@@ -122,7 +122,41 @@
             "$ref": "#/components/responses/200"
           },
           "401": {
-            "$ref": "#/components/responses/401Token"
+            "description": "Invalid or expired token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired token"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Unauthorized"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -145,7 +179,41 @@
             "$ref": "#/components/responses/noContent"
           },
           "401": {
-            "$ref": "#/components/responses/401Token"
+            "description": "Invalid or expired token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired token"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Unauthorized"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -660,304 +728,6 @@
     }
   },
   "components": {
-    "schemas": {
-      "UserRegister": {
-        "$ref": "#/components/schemas/userRegister"
-      },
-      "UserLogin": {
-        "$ref": "#/components/schemas/userLogin"
-      },
-      "Tokens": {
-        "$ref": "#/components/schemas/tokens"
-      },
-      "UserInformation": {
-        "$ref": "#/components/schemas/userInformation"
-      },
-      "userRegister": {
-        "type": "object",
-        "required": [
-          "name",
-          "email",
-          "password"
-        ],
-        "properties": {
-          "name": {
-            "description": "User's name",
-            "type": "string",
-            "minLength": 2,
-            "maxLength": 32,
-            "example": "John Doe"
-          },
-          "email": {
-            "description": "User's email",
-            "type": "string",
-            "format": "email",
-            "maxLength": 64,
-            "example": "johnDoe@gmail.com"
-          },
-          "password": {
-            "description": "User's password",
-            "type": "string",
-            "minLength": 8,
-            "maxLength": 64,
-            "example": "qweRTyui"
-          }
-        }
-      },
-      "userRegisterRespons": {
-        "type": "object",
-        "required": [
-          "_id",
-          "name",
-          "email",
-          "createdAt",
-          "updatedAt"
-        ],
-        "properties": {
-          "_id": {
-            "description": "User id",
-            "type": "string",
-            "example": "65e4decdd286b30065d54af9"
-          },
-          "name": {
-            "description": "User's name",
-            "type": "string",
-            "minLength": 2,
-            "maxLength": 32,
-            "example": "John Doe"
-          },
-          "email": {
-            "description": "User's email",
-            "type": "string",
-            "format": "email",
-            "maxLength": 64,
-            "example": "johnDoe@gmail.com"
-          },
-          "createdAt": {
-            "description": "Data create",
-            "type": "string",
-            "format": "date-time",
-            "example": "2025-04-08T22:44:33.327Z"
-          },
-          "updatedAt": {
-            "description": "Data update",
-            "type": "string",
-            "format": "date-time",
-            "example": "2025-04-16T19:32:54.566Z"
-          }
-        }
-      },
-      "userLogin": {
-        "type": "object",
-        "required": [
-          "email",
-          "password"
-        ],
-        "properties": {
-          "email": {
-            "description": "User's email",
-            "type": "string",
-            "format": "email",
-            "maxLength": 64,
-            "example": "johnDoe@gmail.com"
-          },
-          "password": {
-            "description": "User's password",
-            "type": "string",
-            "minLength": 8,
-            "maxLength": 64,
-            "example": "qweRTyui"
-          }
-        }
-      },
-      "tokens": {
-        "type": "object",
-        "properties": {
-          "accessToken": {
-            "type": "string"
-          }
-        }
-      },
-      "userInformation": {
-        "type": "object",
-        "required": [
-          "_id",
-          "name",
-          "email",
-          "balance",
-          "createdAt",
-          "updatedAt"
-        ],
-        "properties": {
-          "_id": {
-            "description": "User id",
-            "type": "string",
-            "example": "65e4decdd286b30065d54af9"
-          },
-          "name": {
-            "description": "User's name",
-            "type": "string",
-            "minLength": 2,
-            "maxLength": 32,
-            "example": "John Doe"
-          },
-          "balance": {
-            "description": "Information about balance",
-            "type": "number",
-            "example": "0.00"
-          },
-          "email": {
-            "description": "User's email",
-            "type": "string",
-            "format": "email",
-            "maxLength": 64,
-            "example": "johnDoe@gmail.com"
-          },
-          "createdAt": {
-            "description": "Data create",
-            "type": "string",
-            "format": "date-time",
-            "example": "2025-04-08T22:44:33.327Z"
-          },
-          "updatedAt": {
-            "description": "Data update",
-            "type": "string",
-            "format": "date-time",
-            "example": "2025-04-16T19:32:54.566Z"
-          }
-        }
-      },
-      "categoriesInformation": {
-        "type": "object",
-        "required": [
-          "_id",
-          "name",
-          "type"
-        ],
-        "properties": {
-          "_id": {
-            "description": "Category id",
-            "type": "string",
-            "example": "65e4decdd286b30065d54af9"
-          },
-          "name": {
-            "description": "Category",
-            "type": "string",
-            "example": "Incomes"
-          },
-          "type": {
-            "description": "Type category",
-            "type": "string",
-            "example": "income"
-          }
-        }
-      },
-      "transactions": {
-        "type": "object",
-        "required": [
-          "_id",
-          "userId",
-          "categoryId",
-          "date",
-          "amount"
-        ],
-        "properties": {
-          "_id": {
-            "description": "Transaction's id",
-            "type": "string",
-            "example": "65e4decdd286b30065d54af9"
-          },
-          "userId": {
-            "description": "Transaction's user id",
-            "type": "string",
-            "example": "65e4decdd286b30065d54af9"
-          },
-          "categoryId": {
-            "description": "Id of transaction category",
-            "type": "string",
-            "example": "65e4decdd286b30065d54af9"
-          },
-          "date": {
-            "description": "Date of transaction",
-            "type": "string",
-            "example": "2025-05-17"
-          },
-          "amount": {
-            "description": "Transaction's amount",
-            "type": "number",
-            "example": 200
-          },
-          "comment": {
-            "description": "Transaction's comment",
-            "type": "string",
-            "example": "bought bread"
-          }
-        }
-      },
-      "summary": {
-        "type": "object",
-        "required": [
-          "expense",
-          "income",
-          "totalExpense",
-          "totalIncome"
-        ],
-        "properties": {
-          "expense": {
-            "type": "array",
-            "description": "List of expense items",
-            "items": {
-              "type": "object",
-              "required": [
-                "name",
-                "sum"
-              ],
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "Main expenses"
-                },
-                "sum": {
-                  "type": "number",
-                  "example": 100
-                }
-              }
-            }
-          },
-          "income": {
-            "type": "array",
-            "description": "List of income items",
-            "items": {
-              "type": "object",
-              "required": [
-                "name",
-                "sum"
-              ],
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "Incomes"
-                },
-                "sum": {
-                  "type": "number",
-                  "example": 4000
-                }
-              }
-            }
-          },
-          "totalExpense": {
-            "type": "number",
-            "description": "The total amount of all expenses",
-            "example": 2890
-          },
-          "totalIncome": {
-            "type": "number",
-            "description": "The total amount of all income",
-            "example": 4000
-          }
-        }
-      }
-    },
     "responses": {
       "200": {
         "description": "Successful authentication",
@@ -975,7 +745,12 @@
                   "example": "Successfully refreshed a session!"
                 },
                 "data": {
-                  "$ref": "#/components/schemas/tokens"
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -1217,43 +992,6 @@
       },
       "InformationAboutUser": {
         "$ref": "#/components/responses/200user"
-      },
-      "401Token": {
-        "description": "Invalid or expired token",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "required": [
-                "status",
-                "message",
-                "data"
-              ],
-              "properties": {
-                "status": {
-                  "type": "integer",
-                  "example": 401
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Invalid or expired token"
-                },
-                "data": {
-                  "type": "object",
-                  "required": [
-                    "message"
-                  ],
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Unauthorized"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
       },
       "noContent": {
         "description": "No content"
@@ -1673,6 +1411,248 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "userRegister": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "name": {
+            "description": "User's name",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 32,
+            "example": "John Doe"
+          },
+          "email": {
+            "description": "User's email",
+            "type": "string",
+            "format": "email",
+            "maxLength": 64,
+            "example": "johnDoe@gmail.com"
+          },
+          "password": {
+            "description": "User's password",
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 64,
+            "example": "qweRTyui"
+          }
+        }
+      },
+      "userRegisterRespons": {
+        "type": "object",
+        "required": [
+          "_id",
+          "name",
+          "email"
+        ],
+        "properties": {
+          "_id": {
+            "description": "User id",
+            "type": "string",
+            "example": "65e4decdd286b30065d54af9"
+          },
+          "name": {
+            "description": "User's name",
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "description": "User's email",
+            "type": "string",
+            "example": "johnDoe@gmail.com"
+          }
+        }
+      },
+      "userLogin": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "description": "User's email",
+            "type": "string",
+            "format": "email",
+            "maxLength": 64,
+            "example": "johnDoe@gmail.com"
+          },
+          "password": {
+            "description": "User's password",
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 64,
+            "example": "qweRTyui"
+          }
+        }
+      },
+      "userInformation": {
+        "type": "object",
+        "required": [
+          "_id",
+          "name",
+          "email",
+          "balance"
+        ],
+        "properties": {
+          "_id": {
+            "description": "User id",
+            "type": "string",
+            "example": "65e4decdd286b30065d54af9"
+          },
+          "name": {
+            "description": "User's name",
+            "type": "string",
+            "example": "John Doe"
+          },
+          "balance": {
+            "description": "Information about balance",
+            "type": "number",
+            "example": "0.00"
+          },
+          "email": {
+            "description": "User's email",
+            "type": "string",
+            "example": "johnDoe@gmail.com"
+          }
+        }
+      },
+      "categoriesInformation": {
+        "type": "object",
+        "required": [
+          "_id",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "_id": {
+            "description": "Category id",
+            "type": "string",
+            "example": "65e4decdd286b30065d54af9"
+          },
+          "name": {
+            "description": "Category",
+            "type": "string",
+            "example": "Incomes"
+          },
+          "type": {
+            "description": "Type category",
+            "type": "string",
+            "example": "income"
+          }
+        }
+      },
+      "transactions": {
+        "type": "object",
+        "required": [
+          "_id",
+          "userId",
+          "categoryId",
+          "date",
+          "amount"
+        ],
+        "properties": {
+          "_id": {
+            "description": "Transaction's id",
+            "type": "string",
+            "example": "65e4decdd286b30065d54af9"
+          },
+          "userId": {
+            "description": "Transaction's user id",
+            "type": "string",
+            "example": "65e4decdd286b30065d54af9"
+          },
+          "categoryId": {
+            "description": "Id of transaction category",
+            "type": "string",
+            "example": "65e4decdd286b30065d54af9"
+          },
+          "date": {
+            "description": "Date of transaction",
+            "type": "string",
+            "example": "2025-05-17"
+          },
+          "amount": {
+            "description": "Transaction's amount",
+            "type": "number",
+            "example": 200
+          },
+          "comment": {
+            "description": "Transaction's comment",
+            "type": "string",
+            "example": "bought bread"
+          }
+        }
+      },
+      "summary": {
+        "type": "object",
+        "required": [
+          "expense",
+          "income",
+          "totalExpense",
+          "totalIncome"
+        ],
+        "properties": {
+          "expense": {
+            "type": "array",
+            "description": "List of expense items",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "sum"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Main expenses"
+                },
+                "sum": {
+                  "type": "number",
+                  "example": 100
+                }
+              }
+            }
+          },
+          "income": {
+            "type": "array",
+            "description": "List of income items",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "sum"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Incomes"
+                },
+                "sum": {
+                  "type": "number",
+                  "example": 4000
+                }
+              }
+            }
+          },
+          "totalExpense": {
+            "type": "number",
+            "description": "The total amount of all expenses",
+            "example": 2890
+          },
+          "totalIncome": {
+            "type": "number",
+            "description": "The total amount of all income",
+            "example": 4000
+          }
+        }
       }
     }
   }
