@@ -4,8 +4,38 @@ import { CategoriesCollection } from '../db/models/category.js';
 import { TransactionsCollection } from '../db/models/transaction.js';
 import { updateBalance } from './user.js';
 
-export const getAllTransactions = ({ userId }) =>
-  TransactionsCollection.find({ userId });
+// export const getAllTransactions = ({ userId }) =>
+//   TransactionsCollection.find({ userId });
+
+export const getAllTransactions = async ({ userId }) => {
+  return TransactionsCollection.aggregate([
+    {
+      $match: { userId },
+    },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'categoryId',
+        foreignField: '_id',
+        as: 'category',
+      },
+    },
+    {
+      $unwind: '$category',
+    },
+    {
+      $project: {
+        userId: 1,
+        categoryId: 1,
+        date: 1,
+        amount: 1,
+        comment: 1,
+        'category.name': 1,
+        'category.type': 1,
+      },
+    },
+  ]);
+};
 
 export const getTransactionById = (id, userId) =>
   TransactionsCollection.findOne({ _id: id, userId });
