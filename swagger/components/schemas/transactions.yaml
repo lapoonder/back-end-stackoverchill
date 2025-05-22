@@ -30,3 +30,17 @@ properties:
     description: "Transaction's comment"
     type: string
     example: 'bought bread'
+  category:
+    description: 'Category information (name and type)'
+    type: object
+    required:
+      - name
+      - type
+    properties:
+      name:
+        type: string
+        example: 'Household products'
+      type:
+        type: string
+        enum: [income, expense]
+        example: 'expense'
