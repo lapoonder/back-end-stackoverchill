@@ -3,6 +3,7 @@ import { getCategoriesById } from '../services/categories.js';
 import { CategoriesCollection } from '../db/models/category.js';
 import { TransactionsCollection } from '../db/models/transaction.js';
 import { updateBalance } from './user.js';
+import mongoose from 'mongoose';
 
 // export const getAllTransactions = ({ userId }) =>
 //   TransactionsCollection.find({ userId });
@@ -37,8 +38,43 @@ export const getAllTransactions = async ({ userId }) => {
   ]);
 };
 
-export const getTransactionById = (id, userId) =>
-  TransactionsCollection.findOne({ _id: id, userId });
+// export const getTransactionById = (id, userId) =>
+//   TransactionsCollection.findOne({ _id: id, userId });
+
+export const getTransactionById = async (id, userId) => {
+  const [transaction] = await TransactionsCollection.aggregate([
+    {
+      $match: {
+        _id: typeof id === 'string' ? new mongoose.Types.ObjectId(id) : id,
+        userId,
+      },
+    },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'categoryId',
+        foreignField: '_id',
+        as: 'category',
+      },
+    },
+    {
+      $unwind: '$category',
+    },
+    {
+      $project: {
+        userId: 1,
+        categoryId: 1,
+        date: 1,
+        amount: 1,
+        comment: 1,
+        'category.name': 1,
+        'category.type': 1,
+      },
+    },
+  ]);
+
+  return transaction || null;
+};
 
 export const createTransaction = async (payload, userId, balance, type) => {
   const transaction = await TransactionsCollection.create({
@@ -53,7 +89,21 @@ export const createTransaction = async (payload, userId, balance, type) => {
 
   const updatedBalance = await updateBalance(newBalance, userId);
 
-  return { transaction, balance: updatedBalance };
+  const category = await getCategoriesById(payload.categoryId);
+  const result = {
+    _id: transaction._id,
+    userId: transaction.userId,
+    categoryId: transaction.categoryId,
+    date: transaction.date.toISOString().split('T')[0],
+    amount: transaction.amount,
+    comment: transaction.comment,
+    category: {
+      name: category.name,
+      type: category.type,
+    },
+  };
+
+  return { transaction: result, balance: updatedBalance };
 };
 
 export const deleteTransaction = async (transactionId, userId, balance) => {
@@ -92,35 +142,45 @@ export const updateTransaction = async (
     );
   }
 
-  const rawResult = await TransactionsCollection.findOneAndUpdate(
+  const updatedTransaction = await TransactionsCollection.findOneAndUpdate(
     { _id: transactionId, userId },
     payload,
     {
       new: true,
-      includeResultMetadata: true,
       ...options,
     },
-  );
+  ).populate({
+    path: 'categoryId',
+    select: 'name type',
+  });
 
-  if (!rawResult || !rawResult.value) return null;
+  if (!updatedTransaction) return null;
 
+  const result = {
+    _id: updatedTransaction._id,
+    userId: updatedTransaction.userId,
+    categoryId: updatedTransaction.categoryId._id,
+    date: updatedTransaction.date.toISOString().split('T')[0],
+    amount: updatedTransaction.amount,
+    comment: updatedTransaction.comment,
+    category: {
+      name: updatedTransaction.categoryId.name,
+      type: updatedTransaction.categoryId.type,
+    },
+  };
+
+  let updatedBalance = balance;
   if (payload.amount !== transaction.amount) {
     const diffrence = transaction.amount - payload.amount;
-    const newBalance = balance + diffrence;
+    updatedBalance =
+      newCategory === 'income' ? balance - diffrence : balance + diffrence;
 
-    const updatedBalance = await updateBalance(newBalance, userId);
-
-    return {
-      transaction: rawResult.value,
-      balance: updatedBalance,
-      isNew: Boolean(rawResult?.lastErrorObject?.upserted),
-    };
+    updatedBalance = await updateBalance(updatedBalance, userId);
   }
 
   return {
-    transaction: rawResult.value,
-    balance,
-    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+    transaction: result,
+    balance: updatedBalance,
   };
 };
 
