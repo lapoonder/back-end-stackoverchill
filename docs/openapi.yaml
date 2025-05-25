@@ -8,7 +8,6 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 servers:
   - url: https://back-end-stackoverchill-793z.onrender.com
-  - url: http://localhost:3000
 tags:
   - name: Auth
     description: Authentication endpoints

@@ -26,7 +26,6 @@ const transactionsSchema = new Schema(
       type: String,
       minlength: [2, 'Comment must contain at least 2 characters'],
       maxlength: [192, 'The comment must not exceed 192 characters'],
-      default: '',
     },
   },
   {
