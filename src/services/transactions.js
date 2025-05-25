@@ -112,7 +112,11 @@ export const deleteTransaction = async (transactionId, userId, balance) => {
     userId,
   });
 
-  const newBalance = balance + transaction.amount;
+  const category = await getCategoriesById(transaction?.categoryId);
+  const newBalance =
+    category === 'income'
+      ? balance - transaction.amount
+      : balance + transaction.amount;
 
   const updatedBalance = await updateBalance(newBalance, userId);
   return { transaction, balance: updatedBalance };

@@ -12,9 +12,6 @@
   "servers": [
     {
       "url": "https://back-end-stackoverchill-793z.onrender.com"
-    },
-    {
-      "url": "http://localhost:3000"
     }
   ],
   "tags": [
